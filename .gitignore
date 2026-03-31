@@ -1,4 +1,12 @@
 node_modules/
 dist/
+scripts/
+backend/
+BOQ-frontend/
+BOQ-backend/
+.git-pre-split-backup/
+BOQ Json files.zip
+BOQ Json files.docx
+.docx_extract/
 .DS_Store
 npm-debug.log*
