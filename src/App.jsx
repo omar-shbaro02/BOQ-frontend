@@ -9,6 +9,7 @@ const systemDateLabel = new Date().toLocaleDateString(undefined, {
 function App() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [busyAgentId, setBusyAgentId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadBusy, setUploadBusy] = useState(false);
@@ -25,50 +26,93 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [dashboard?.chat_history]);
 
+  async function requestJson(url, options) {
+    let response;
+
+    try {
+      response = await fetch(url, options);
+    } catch {
+      throw new Error("The API server is not reachable at http://127.0.0.1:8000. Start the backend and refresh the page.");
+    }
+
+    const raw = await response.text();
+    let data = null;
+
+    if (raw) {
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error(`The API returned a non-JSON response with status ${response.status}. Check that the backend is running cleanly.`);
+      }
+    }
+
+    if (!response.ok) {
+      const detail =
+        data && typeof data === "object" && "detail" in data ? data.detail : `Request failed with status ${response.status}.`;
+      throw new Error(detail);
+    }
+
+    if (!data) {
+      throw new Error("The API returned an empty response.");
+    }
+
+    return data;
+  }
+
   async function loadDashboard() {
     setLoading(true);
-    const response = await fetch("/api/dashboard");
-    const data = await response.json();
-    setDashboard(data);
-    setLoading(false);
+    setErrorMessage("");
+    try {
+      const data = await requestJson("/api/dashboard");
+      setDashboard(data);
+    } catch (error) {
+      setDashboard(null);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function runAgent(agentId) {
     setBusyAgentId(agentId);
-    const response = await fetch(`/api/agents/${agentId}/run`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await response.json();
-    setDashboard(data);
-    setBusyAgentId(null);
+    setErrorMessage("");
+    try {
+      const data = await requestJson(`/api/agents/${agentId}/run`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      setDashboard(data);
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setBusyAgentId(null);
+    }
   }
 
   async function uploadBoq() {
     if (!selectedFile) return;
 
     setUploadBusy(true);
-    const response = await fetch("/api/boq/upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": selectedFile.type || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "x-filename": selectedFile.name,
-      },
-      body: selectedFile,
-    });
-
-    if (!response.ok) {
+    setErrorMessage("");
+    try {
+      const data = await requestJson("/api/boq/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": selectedFile.type || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "x-filename": selectedFile.name,
+        },
+        body: selectedFile,
+      });
+      setDashboard(data);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
       setUploadBusy(false);
-      return;
     }
-
-    const data = await response.json();
-    setDashboard(data);
-    setSelectedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    setUploadBusy(false);
   }
 
   async function submitChat(event) {
@@ -76,19 +120,28 @@ function App() {
     if (!chatInput.trim()) return;
 
     setChatBusy(true);
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: chatInput }),
-    });
-    const data = await response.json();
-    setDashboard(data);
-    setChatInput("");
-    setChatBusy(false);
+    setErrorMessage("");
+    try {
+      const data = await requestJson("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: chatInput }),
+      });
+      setDashboard(data);
+      setChatInput("");
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setChatBusy(false);
+    }
   }
 
   if (loading || !dashboard) {
-    return <div className="loading-shell">Loading BOQ agent console...</div>;
+    return (
+      <div className="loading-shell">
+        {errorMessage || "Loading BOQ agent console..."}
+      </div>
+    );
   }
 
   const { agents, planner, timeline, chat_history: chatHistory, project_summary: summary, boq_upload: boqUpload } = dashboard;
@@ -96,6 +149,7 @@ function App() {
 
   return (
     <main className="page-shell">
+      {errorMessage ? <div className="loading-shell">{errorMessage}</div> : null}
       <section className="hero-panel">
         <div className="hero-copy-block">
           <p className="eyebrow">Construction AI control room</p>
