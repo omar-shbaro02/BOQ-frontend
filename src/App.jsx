@@ -5,6 +5,11 @@ const systemDateLabel = new Date().toLocaleDateString(undefined, {
   month: "short",
   day: "numeric",
 });
+const apiBaseUrl = (import.meta.env.VITE_API_URL || "https://boq-backend-tfyq.onrender.com").replace(/\/$/, "");
+
+function getApiUrl(path) {
+  return `${apiBaseUrl}${path}`;
+}
 
 function App() {
   const [dashboard, setDashboard] = useState(null);
@@ -30,9 +35,9 @@ function App() {
     let response;
 
     try {
-      response = await fetch(url, options);
+      response = await fetch(getApiUrl(url), options);
     } catch {
-      throw new Error("The API server is not reachable at http://127.0.0.1:8000. Start the backend and refresh the page.");
+      throw new Error(`The API server is not reachable at ${apiBaseUrl}.`);
     }
 
     const raw = await response.text();
@@ -354,7 +359,7 @@ function App() {
               >
                 {busyAgentId === planner.id ? "Building export..." : "Run Project Manager Agent"}
               </button>
-              <a className="run-button export-link" href="/api/exports/primavera.xlsx" target="_blank" rel="noreferrer">
+              <a className="run-button export-link" href={getApiUrl("/api/exports/primavera.xlsx")} target="_blank" rel="noreferrer">
                 Download Primavera Import XLSX
               </a>
               <p className="planner-export-note">
