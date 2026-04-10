@@ -16,6 +16,13 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [busyAgentId, setBusyAgentId] = useState(null);
+  const [workflowBusy, setWorkflowBusy] = useState(false);
+  const [workflowProgress, setWorkflowProgress] = useState([]);
+  const [schemaCheck, setSchemaCheck] = useState({
+    status: "checking",
+    message: "Checking agent schemas...",
+    count: 0,
+  });
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadBusy, setUploadBusy] = useState(false);
   const [chatInput, setChatInput] = useState("");
@@ -25,6 +32,7 @@ function App() {
 
   useEffect(() => {
     loadDashboard();
+    loadAgentSchemas();
   }, []);
 
   useEffect(() => {
@@ -64,6 +72,75 @@ function App() {
     return data;
   }
 
+  function isMissingEndpoint(error) {
+    return String(error.message).toLowerCase().includes("not found") || String(error.message).includes("404");
+  }
+
+  function getDashboardPayload(data) {
+    if (data && typeof data === "object" && data.dashboard) return data.dashboard;
+    if (data && typeof data === "object" && data.state) return data.state;
+    return data;
+  }
+
+  function updateWorkflowStep(stepId, status, note = "") {
+    setWorkflowProgress((steps) =>
+      steps.map((step) => (step.id === stepId ? { ...step, status, note } : step)),
+    );
+  }
+
+  function readSchemaSummary(data) {
+    const schemaAgents = Array.isArray(data) ? data : data.agents || data.schemas || [];
+    const count = Array.isArray(schemaAgents) ? schemaAgents.length : 0;
+    const modelNames = schemaAgents
+      .map((agent) => agent.model || agent.openai_model || agent.model_name)
+      .filter(Boolean);
+    const uniqueModels = [...new Set(modelNames)];
+    const openAiMarked =
+      data.openai_agents === true ||
+      data.provider === "openai" ||
+      schemaAgents.some((agent) => String(agent.provider || agent.type || "").toLowerCase().includes("openai")) ||
+      uniqueModels.some((model) => /^gpt-|^o\d/i.test(model));
+
+    return {
+      count,
+      models: uniqueModels,
+      openAiMarked,
+    };
+  }
+
+  async function loadAgentSchemas() {
+    setSchemaCheck({ status: "checking", message: "Checking agent schemas...", count: 0 });
+    try {
+      const data = await requestJson("/api/agents/schemas");
+      const summary = readSchemaSummary(data);
+      setSchemaCheck({
+        status: "verified",
+        message: summary.openAiMarked
+          ? "OpenAI agent schemas verified."
+          : "Agent schemas are available; provider metadata was not included.",
+        count: summary.count,
+        models: summary.models,
+      });
+      return data;
+    } catch (error) {
+      if (isMissingEndpoint(error)) {
+        setSchemaCheck({
+          status: "fallback",
+          message: "Schema endpoint is not available on this backend; using dashboard agent order.",
+          count: 0,
+        });
+        return null;
+      }
+
+      setSchemaCheck({
+        status: "error",
+        message: error.message,
+        count: 0,
+      });
+      return null;
+    }
+  }
+
   async function loadDashboard() {
     setLoading(true);
     setErrorMessage("");
@@ -90,6 +167,81 @@ function App() {
     } catch (error) {
       setErrorMessage(error.message);
     } finally {
+      setBusyAgentId(null);
+    }
+  }
+
+  async function runAllAgents() {
+    if (!dashboard) return;
+
+    const specialistAgents = [...dashboard.agents].sort((a, b) => a.sequence - b.sequence);
+    const steps = [
+      { id: "schemas", label: "Verify OpenAI agent schemas", status: "waiting", note: "" },
+      ...specialistAgents.map((agent) => ({
+        id: agent.id,
+        label: `${agent.sequence}. ${agent.wbs_category}`,
+        status: "waiting",
+        note: agent.agent_name,
+      })),
+      { id: dashboard.planner.id, label: dashboard.planner.name, status: "waiting", note: "Build schedule and export" },
+    ];
+
+    setWorkflowProgress(steps);
+    setWorkflowBusy(true);
+    setBusyAgentId("all");
+    setErrorMessage("");
+
+    try {
+      updateWorkflowStep("schemas", "running", "Reading backend schemas");
+      const schemas = await loadAgentSchemas();
+      updateWorkflowStep(
+        "schemas",
+        schemas ? "completed" : "fallback",
+        schemas ? "Schema endpoint responded" : "Continuing with dashboard order",
+      );
+
+      try {
+        specialistAgents.forEach((agent) => updateWorkflowStep(agent.id, "waiting", "Queued by backend run-all"));
+        updateWorkflowStep(dashboard.planner.id, "waiting", "Queued by backend run-all");
+        const runAllData = await requestJson("/api/agents/run-all", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        const nextDashboard = getDashboardPayload(runAllData);
+        setDashboard(nextDashboard);
+        specialistAgents.forEach((agent) => updateWorkflowStep(agent.id, "completed", "Completed in backend sequence"));
+        updateWorkflowStep(dashboard.planner.id, "completed", "Schedule and export refreshed");
+        return;
+      } catch (error) {
+        if (!isMissingEndpoint(error)) throw error;
+      }
+
+      let latestDashboard = dashboard;
+      for (const agent of specialistAgents) {
+        updateWorkflowStep(agent.id, "running", "Extracting BOQ activities");
+        const data = await requestJson(`/api/agents/${agent.id}/run`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        latestDashboard = getDashboardPayload(data);
+        setDashboard(latestDashboard);
+        updateWorkflowStep(agent.id, "completed", "Activities refreshed");
+      }
+
+      updateWorkflowStep(latestDashboard.planner.id, "running", "Building schedule and Primavera export");
+      const plannerData = await requestJson(`/api/agents/${latestDashboard.planner.id}/run`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      setDashboard(getDashboardPayload(plannerData));
+      updateWorkflowStep(latestDashboard.planner.id, "completed", "Schedule and export refreshed");
+    } catch (error) {
+      setErrorMessage(error.message);
+      setWorkflowProgress((stepsList) =>
+        stepsList.map((step) => (step.status === "running" ? { ...step, status: "failed", note: error.message } : step)),
+      );
+    } finally {
+      setWorkflowBusy(false);
       setBusyAgentId(null);
     }
   }
@@ -151,6 +303,8 @@ function App() {
 
   const { agents, planner, timeline, chat_history: chatHistory, project_summary: summary, boq_upload: boqUpload } = dashboard;
   const upcomingActivities = timeline.schedule.slice(0, 6);
+  const orderedAgents = [...agents].sort((a, b) => a.sequence - b.sequence);
+  const workflowHasRun = workflowProgress.length > 0;
 
   return (
     <main className="page-shell">
@@ -165,7 +319,7 @@ function App() {
           </p>
           <div className="hero-notes">
             <span>Excel BOQ intake live</span>
-            <span>Agent-by-agent extraction</span>
+            <span>Sequential agent workflow</span>
             <span>Project manager export</span>
           </div>
         </div>
@@ -201,7 +355,7 @@ function App() {
           <span className="workflow-step">02</span>
           <div>
             <strong>Run agents</strong>
-            <p>Each specialist extracts scheduler-ready activities from its WBS package.</p>
+            <p>One action runs every specialist in WBS order.</p>
           </div>
         </article>
         <article className="workflow-card">
@@ -229,6 +383,54 @@ function App() {
         <div>
           <span>Planner agent</span>
           <strong>{planner.name}</strong>
+        </div>
+      </section>
+
+      <section className="panel workflow-console">
+        <div className="panel-head">
+          <div>
+            <p className="eyebrow">Start to finish</p>
+            <h2>Run the complete BOQ agent workflow</h2>
+            <p className="section-copy">
+              Verify the agent schemas, run each WBS extractor in sequence, then rebuild the final schedule
+              and Primavera export.
+            </p>
+          </div>
+          <button className="run-button workflow-run-button" type="button" onClick={runAllAgents} disabled={workflowBusy}>
+            {workflowBusy ? "Running full workflow..." : "Run All Agents"}
+          </button>
+        </div>
+        <div className={`schema-status ${schemaCheck.status}`}>
+          <strong>{schemaCheck.message}</strong>
+          <span>
+            {schemaCheck.count > 0 ? `${schemaCheck.count} schema${schemaCheck.count === 1 ? "" : "s"} found` : "Ready for backend verification"}
+            {schemaCheck.models?.length ? ` · ${schemaCheck.models.join(", ")}` : ""}
+          </span>
+        </div>
+        <div className="workflow-progress-list">
+          {(workflowHasRun
+            ? workflowProgress
+            : [
+                { id: "schemas", label: "Verify OpenAI agent schemas", status: schemaCheck.status, note: schemaCheck.message },
+                ...orderedAgents.map((agent) => ({
+                  id: agent.id,
+                  label: `${agent.sequence}. ${agent.wbs_category}`,
+                  status: agent.last_run ? "completed" : "waiting",
+                  note: agent.last_run ? `Last run ${agent.last_run}` : agent.agent_name,
+                })),
+                {
+                  id: planner.id,
+                  label: planner.name,
+                  status: planner.last_run ? "completed" : "waiting",
+                  note: planner.last_run ? `Last run ${planner.last_run}` : "Build schedule and export",
+                },
+              ]).map((step) => (
+            <article className={`workflow-progress-row ${step.status}`} key={step.id}>
+              <span>{step.label}</span>
+              <strong>{step.status}</strong>
+              <p>{step.note}</p>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -286,16 +488,15 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow">Specialist agents</p>
-              <h2>Clear package cards for each BOQ extractor</h2>
+              <h2>Sequential WBS extraction order</h2>
               <p className="section-copy">
-                Each card surfaces only the most useful information: what the agent reads, how it formats
-                the output, and a short preview of the activities it produces.
+                These agents run from top to bottom before the project manager agent assembles the schedule.
               </p>
             </div>
           </div>
 
           <div className="agent-grid">
-            {agents.map((agent) => (
+            {orderedAgents.map((agent) => (
               <article className="agent-card" key={agent.id}>
                 <div className="agent-card-top">
                   <span className="agent-seq">Agent {agent.sequence}</span>
@@ -319,13 +520,10 @@ function App() {
                     </div>
                   ))}
                 </div>
-                <button
-                  className="run-button"
-                  onClick={() => runAgent(agent.id)}
-                  disabled={busyAgentId === agent.id}
-                >
-                  {busyAgentId === agent.id ? "Running..." : "Run agent"}
-                </button>
+                <div className="agent-run-meta">
+                  <span>Last run</span>
+                  <strong>{agent.last_run ?? "Waiting for full workflow"}</strong>
+                </div>
               </article>
             ))}
           </div>
@@ -354,10 +552,10 @@ function App() {
             <div className="planner-actions">
               <button
                 className="run-button"
-                onClick={() => runAgent(planner.id)}
-                disabled={busyAgentId === planner.id}
+                onClick={runAllAgents}
+                disabled={workflowBusy || busyAgentId === planner.id}
               >
-                {busyAgentId === planner.id ? "Building export..." : "Run Project Manager Agent"}
+                {workflowBusy ? "Running workflow..." : "Run Full Workflow and Export"}
               </button>
               <a className="run-button export-link" href={getApiUrl("/api/exports/primavera.xlsx")} target="_blank" rel="noreferrer">
                 Download Primavera Import XLSX

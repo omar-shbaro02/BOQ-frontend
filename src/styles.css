@@ -84,7 +84,7 @@ input {
   gap: 28px;
   grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.9fr);
   padding: 34px;
-  border-radius: 30px;
+  border-radius: 8px;
 }
 
 .workflow-strip {
@@ -93,7 +93,7 @@ input {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 18px;
   padding: 16px;
-  border-radius: 24px;
+  border-radius: 8px;
 }
 
 .eyebrow {
@@ -155,7 +155,7 @@ h3 {
 
 .hero-notes span {
   padding: 10px 12px;
-  border-radius: 999px;
+  border-radius: 8px;
   background: rgba(23, 23, 23, 0.96);
   border: 1px solid var(--line-strong);
   color: var(--text-secondary);
@@ -178,7 +178,7 @@ h3 {
 .summary-strip div,
 .workflow-card {
   padding: 18px 18px 20px;
-  border-radius: 20px;
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98));
   border: 1px solid var(--line-strong);
   box-shadow: var(--shadow-soft);
@@ -202,7 +202,7 @@ h3 {
   place-items: center;
   width: 42px;
   height: 42px;
-  border-radius: 14px;
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(250, 204, 21, 0.24), rgba(202, 138, 4, 0.18));
   color: #fff7cc;
   font-weight: 800;
@@ -290,7 +290,7 @@ h3 {
   place-items: center;
   gap: 8px;
   min-height: 180px;
-  border-radius: 22px;
+  border-radius: 8px;
   border: 1px dashed var(--line-strong);
   background:
     linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98)),
@@ -303,7 +303,7 @@ h3 {
   width: 100%;
   max-width: 320px;
   padding: 10px 12px;
-  border-radius: 14px;
+  border-radius: 8px;
   border: 1px solid var(--line-strong);
   background: rgba(10, 10, 10, 0.92);
   color: var(--text-secondary);
@@ -324,7 +324,7 @@ h3 {
 
 .intake-info div {
   padding: 16px;
-  border-radius: 18px;
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98));
   border: 1px solid var(--line-strong);
 }
@@ -338,8 +338,106 @@ h3 {
 
 .agent-card,
 .panel {
-  border-radius: 24px;
+  border-radius: 8px;
   padding: 22px;
+}
+
+.workflow-console {
+  margin-bottom: 22px;
+}
+
+.workflow-run-button {
+  align-self: start;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 220px;
+  margin-top: 0;
+}
+
+.schema-status {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: rgba(17, 17, 17, 0.92);
+}
+
+.schema-status span {
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.schema-status.verified {
+  border-color: rgba(34, 197, 94, 0.32);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.schema-status.fallback,
+.schema-status.checking {
+  border-color: rgba(245, 158, 11, 0.28);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.schema-status.error {
+  border-color: rgba(239, 68, 68, 0.32);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.workflow-progress-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.workflow-progress-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 14px;
+  align-items: start;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.96));
+}
+
+.workflow-progress-row span {
+  font-weight: 700;
+}
+
+.workflow-progress-row strong {
+  border-radius: 8px;
+  padding: 4px 8px;
+  background: rgba(163, 163, 163, 0.14);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.workflow-progress-row p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.workflow-progress-row.running strong,
+.workflow-progress-row.checking strong {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fde68a;
+}
+
+.workflow-progress-row.completed strong,
+.workflow-progress-row.verified strong {
+  background: rgba(34, 197, 94, 0.16);
+  color: #bbf7d0;
+}
+
+.workflow-progress-row.failed strong,
+.workflow-progress-row.error strong {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
 }
 
 .agent-card-top {
@@ -355,7 +453,7 @@ h3 {
   display: inline-flex;
   align-items: center;
   padding: 8px 12px;
-  border-radius: 999px;
+  border-radius: 8px;
   font-size: 0.78rem;
   border: 1px solid var(--line-strong);
   background: rgba(31, 31, 31, 0.96);
@@ -407,7 +505,7 @@ h3 {
 .agent-guidelines span,
 .flow-list span {
   padding: 8px 10px;
-  border-radius: 14px;
+  border-radius: 8px;
   background: rgba(20, 184, 166, 0.12);
   color: #ccfbf1;
   font-size: 0.85rem;
@@ -448,7 +546,7 @@ h3 {
   display: grid;
   gap: 8px;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 8px;
   border: 1px solid var(--line-strong);
   background: linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.96));
   box-shadow: inset 0 1px 0 rgba(250, 204, 21, 0.04);
@@ -482,7 +580,7 @@ h3 {
   width: 100%;
   margin-top: 18px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 14px 16px;
   background: linear-gradient(180deg, var(--accent) 0%, var(--accent-hover) 68%, var(--accent-deep) 100%);
   color: #111111;
@@ -514,9 +612,29 @@ h3 {
   gap: 8px 14px;
   margin-top: 16px;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 8px;
   border: 1px solid var(--line-strong);
   background: linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98));
+}
+
+.agent-run-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: rgba(10, 10, 10, 0.48);
+}
+
+.agent-run-meta span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.agent-run-meta strong {
+  color: var(--ink);
+  line-height: 1.35;
 }
 
 .planner-meta span {
@@ -554,7 +672,7 @@ h3 {
 .chat-bubble {
   max-width: 90%;
   padding: 14px 16px;
-  border-radius: 18px;
+  border-radius: 8px;
   border: 1px solid var(--line-strong);
   line-height: 1.58;
 }
@@ -581,7 +699,7 @@ h3 {
 .chat-form textarea {
   width: 100%;
   resize: vertical;
-  border-radius: 18px;
+  border-radius: 8px;
   border: 1px solid var(--line-strong);
   background: rgba(10, 10, 10, 0.94);
   padding: 16px;
@@ -593,7 +711,7 @@ h3 {
 .timeline-panel .finish-date {
   min-width: 112px;
   padding: 10px 12px;
-  border-radius: 16px;
+  border-radius: 8px;
   text-align: center;
   background: rgba(20, 184, 166, 0.12);
   border: 1px solid rgba(45, 212, 191, 0.18);
@@ -641,7 +759,7 @@ h3 {
 
 .file-input::file-selector-button {
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(31, 31, 31, 0.96);
   color: var(--text-secondary);
   padding: 8px 12px;
@@ -677,7 +795,7 @@ h3 {
   .hero-panel,
   .panel,
   .agent-card {
-    border-radius: 20px;
+    border-radius: 8px;
     padding: 18px;
   }
 
