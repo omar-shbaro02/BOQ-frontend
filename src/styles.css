@@ -368,6 +368,12 @@ h3 {
   border-color: rgba(34, 197, 94, 0.28);
 }
 
+.status-pill.running {
+  background: rgba(20, 184, 166, 0.16);
+  color: #ccfbf1;
+  border-color: rgba(45, 212, 191, 0.24);
+}
+
 .status-pill.completed,
 .status-pill.ready,
 .status-pill.success {
@@ -378,7 +384,8 @@ h3 {
 
 .status-pill.pending,
 .status-pill.idle,
-.status-pill.waiting {
+.status-pill.waiting,
+.status-pill.queued {
   background: rgba(245, 158, 11, 0.14);
   color: #fde68a;
   border-color: rgba(245, 158, 11, 0.24);
@@ -541,6 +548,16 @@ h3 {
   opacity: 0.72;
   cursor: wait;
   transform: none;
+}
+
+.secondary-button {
+  background: linear-gradient(180deg, rgba(20, 184, 166, 0.94), rgba(13, 148, 136, 0.96));
+  color: #f0fdfa;
+  box-shadow: 0 12px 28px rgba(20, 184, 166, 0.26);
+}
+
+.secondary-button:hover {
+  box-shadow: 0 16px 34px rgba(20, 184, 166, 0.32);
 }
 
 .chat-feed {

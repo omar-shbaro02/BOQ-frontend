@@ -1,0 +1,852 @@
+{
+    "name":  "My workflow 5",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       656,
+                                       -64
+                                   ],
+                      "id":  "218ba208-0ef5-4e48-8048-c795e751f281",
+                      "name":  "OpenAI Chat Model",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       912,
+                                       688
+                                   ],
+                      "id":  "576f845e-accc-45bc-a2ee-e1fea8b61c2d",
+                      "name":  "OpenAI Chat Model1",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       960,
+                                       224
+                                   ],
+                      "id":  "59a960ed-48d5-444c-906d-42e9297d40d9",
+                      "name":  "OpenAI Chat Model2",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       1200,
+                                       -64
+                                   ],
+                      "id":  "fb93c710-58bf-48c6-b8e2-7c87f8bceef8",
+                      "name":  "OpenAI Chat Model3",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       1424,
+                                       80
+                                   ],
+                      "id":  "11b03c0b-4789-43cc-ba9c-2da17622dd2e",
+                      "name":  "OpenAI Chat Model4",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       1712,
+                                       -112
+                                   ],
+                      "id":  "0bc175c7-715f-4017-8553-c10fc75fa37f",
+                      "name":  "OpenAI Chat Model5",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       2192,
+                                       -16
+                                   ],
+                      "id":  "c6bb9554-264e-4605-9c82-23c562f46330",
+                      "name":  "OpenAI Chat Model6",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       2352,
+                                       160
+                                   ],
+                      "id":  "dd4f3ac6-3dfe-4e8e-a7a5-dd9edb5872ff",
+                      "name":  "OpenAI Chat Model7",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       2432,
+                                       480
+                                   ],
+                      "id":  "a3a759b3-615d-4589-a54f-183378ba804c",
+                      "name":  "OpenAI Chat Model8",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  {
+                                                       "__rl":  true,
+                                                       "mode":  "list",
+                                                       "value":  "gpt-4.1-mini"
+                                                   },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       1968,
+                                       416
+                                   ],
+                      "id":  "85a2661a-a3aa-463d-8fb3-b6202904303e",
+                      "name":  "OpenAI Chat Model9",
+                      "credentials":  {
+                                          "openAiApi":  {
+                                                            "id":  "gxW6nUkzaOb4JxS1",
+                                                            "name":  "OpenAi account 2"
+                                                        }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_01\",\n  wbs_category: \"Doors and Partitions\",\n  sequence: 1,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid activities from the BOQ under Doors and Partitions. Ignore zero quantity entries. Split compound scope into scheduler-ready subtasks.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Doors and Partitions.\",\n      \"Activity Name must be concise, construction-specific, and Primavera-friendly.\",\n      \"Break generic scope into real execution steps such as marking, framing, installation, fixing, hanging, testing, and handover where applicable.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Doors and Partitions\", \"Activity Name\": \"Partitions - Marking\"},\n      {\"WBS\": \"Doors and Partitions\", \"Activity Name\": \"Doors - Frame Installation\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       656,
+                                       -240
+                                   ],
+                      "id":  "aa0ec923-b246-4743-869d-6ea404c8ccf4",
+                      "name":  "Doors and Partitions Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_02\",\n  wbs_category: \"Wood Works\",\n  sequence: 2,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Wood Works activities from the BOQ. Ignore zero quantity entries. Split joinery and carpentry into measurement, fabrication, finishing, delivery, and installation where applicable.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Wood Works.\",\n      \"Prefer execution-stage activities over material descriptions.\",\n      \"Use full task names suitable for schedules.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Wood Works\", \"Activity Name\": \"Joinery - Site Measurements\"},\n      {\"WBS\": \"Wood Works\", \"Activity Name\": \"Joinery - Fabrication\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       960,
+                                       48
+                                   ],
+                      "id":  "f5041020-375a-42af-b39b-94f3a8394124",
+                      "name":  "Wood Works Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_03\",\n  wbs_category: \"Ceiling\",\n  sequence: 3,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Ceiling activities from the BOQ. Ignore zero quantity entries. Split scope into framing, suspension, board fixing, joint treatment, putty, paint, access panels, and final fixing where needed.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Ceiling.\",\n      \"Keep names specific to execution steps.\",\n      \"Avoid material-only labels with no action.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Ceiling\", \"Activity Name\": \"Ceiling - Framing\"},\n      {\"WBS\": \"Ceiling\", \"Activity Name\": \"Ceiling - Paint Final Coat\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       1200,
+                                       -240
+                                   ],
+                      "id":  "bc7101ae-a01f-489f-bbd1-b08bf3000b3f",
+                      "name":  "Ceilings Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_04\",\n  wbs_category: \"Floor Finishes\",\n  sequence: 4,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Floor Finishes activities from the BOQ. Ignore zero quantity entries. Split floor scope into substrate preparation, layout, setting, grouting, polishing, protection, and closeout where applicable.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Floor Finishes.\",\n      \"Use descriptive execution-stage activity names.\",\n      \"Do not merge distinct floor systems into one line.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Floor Finishes\", \"Activity Name\": \"Ceramic Tiles - Layout\"},\n      {\"WBS\": \"Floor Finishes\", \"Activity Name\": \"Raised Floor - Installation\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       1552,
+                                       -128
+                                   ],
+                      "id":  "43f3117d-72aa-487a-af55-8399c41f4ab0",
+                      "name":  "Floor Finishes Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_05\",\n  wbs_category: \"Wall Finishes\",\n  sequence: 5,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Wall Finishes activities from the BOQ. Ignore zero quantity entries. Split paint and wall finish scope into preparation, putty, primer, first coat, second coat, final coat, cladding, and touch-up where applicable.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Wall Finishes.\",\n      \"Use clear scheduler-ready wording.\",\n      \"Do not return procurement notes or specification notes as activities.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Wall Finishes\", \"Activity Name\": \"Wall Finishes - Putty\"},\n      {\"WBS\": \"Wall Finishes\", \"Activity Name\": \"Paint - Final Coat\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       1840,
+                                       -320
+                                   ],
+                      "id":  "e48381eb-75eb-40b4-afbf-c7b55136b2fb",
+                      "name":  "Wall Finishes Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_06\",\n  wbs_category: \"HVAC\",\n  sequence: 6,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid HVAC activities from the BOQ. Ignore zero quantity entries. Split HVAC scope into fabrication, first fix, supports, insulation, equipment installation, testing, balancing, and final fix where applicable.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = HVAC.\",\n      \"Use MEP planner terminology.\",\n      \"Separate equipment activities from duct or piping activities when they are distinct.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"HVAC\", \"Activity Name\": \"Ducting - Fabrication\"},\n      {\"WBS\": \"HVAC\", \"Activity Name\": \"FCU - Final Installation\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       2176,
+                                       -160
+                                   ],
+                      "id":  "34ccd726-1aed-48e7-8773-a56f544d049c",
+                      "name":  "HVAC Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_07\",\n  wbs_category: \"Electrical\",\n  sequence: 7,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Electrical activities from the BOQ. Ignore zero quantity entries. Split systems into conduit, wiring, containment, device installation, fixture installation, testing, and final fixing where applicable.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Electrical.\",\n      \"Use system-specific, execution-ready activity names.\",\n      \"Separate lighting, power, low current, and fire alarm activities when the BOQ supports it.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Electrical\", \"Activity Name\": \"Lighting - Wiring First Fix\"},\n      {\"WBS\": \"Electrical\", \"Activity Name\": \"Fire Alarm - Control Panel Installation\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       2480,
+                                       -48
+                                   ],
+                      "id":  "35d6e331-7f33-4a9b-b44c-f328e565625b",
+                      "name":  "Electrical Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_09\",\n  wbs_category: \"Outdoor Areas\",\n  sequence: 9,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Outdoor Areas activities from the BOQ. Ignore zero quantity entries. Convert landlord and coordination scope into real schedulable actions such as submissions, approvals, execution, inspections, and signoff.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Outdoor Areas.\",\n      \"Use natural, planner-readable activity names.\",\n      \"Do not leave abstract labels like approval or coordination without an action.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Outdoor Areas\", \"Activity Name\": \"Landlord Approval - Shop Drawings\"},\n      {\"WBS\": \"Outdoor Areas\", \"Activity Name\": \"External Paving - Installation\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       2096,
+                                       208
+                                   ],
+                      "id":  "e3b503c6-e3d8-4456-8080-462e84321ff6",
+                      "name":  "Outdoor Areas Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"WBS_Extractor_08\",\n  wbs_category: \"Miscellaneous\",\n  sequence: 8,\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Extract all valid Miscellaneous activities from the BOQ. Ignore zero quantity entries. Convert broad or vague scope into precise installable or testable activities.\",\n  input_text: $(\u0027Extract Text form BOQ\u0027).item.json.text,\n  output_contract: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\"],\n    rules: [\n      \"Every row must use WBS = Miscellaneous.\",\n      \"Use one task per row.\",\n      \"Prefer real field execution tasks over headings and notes.\"\n    ].concat([\"Return only valid JSON.\", \"Do not wrap the answer in markdown or code fences.\", \"Do not add commentary before or after the JSON.\", \"Do not include zero-quantity, duplicate, vague, or note-only items.\"]),\n    example: [\n      {\"WBS\": \"Miscellaneous\", \"Activity Name\": \"Waterproofing - Membrane Installation\"},\n      {\"WBS\": \"Miscellaneous\", \"Activity Name\": \"Testing - Plumbing Leak Check\"}\n    ]\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       2560,
+                                       272
+                                   ],
+                      "id":  "a93da49a-35b1-4d13-b845-31fcbc496ea2",
+                      "name":  "Miscellaneous Expert"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ JSON.stringify({\n  agent_name: \"Project Manager Agent\",\n  role: \"PMP construction planner\",\n  model_requirement: \"Use the connected OpenAI Chat Model only.\",\n  task: \"Combine all specialist outputs into a Primavera-ready linear schedule.\",\n  required_output: {\n    type: \"json_array_only\",\n    columns: [\"WBS\", \"Activity Name\", \"Duration (Days)\", \"Predecessor(s)\"],\n    rules: [\n      \"Return only a JSON array.\",\n      \"Each object must contain exactly the 4 required columns.\",\n      \"Use short, planner-safe names.\",\n      \"Duration (Days) must be a number.\",\n      \"Predecessor(s) must be natural-language predecessor text.\",\n      \"Do not add markdown, explanation, headings, or code fences.\"\n    ]\n  },\n  sequencing_logic: [\n    \"Site Mobilization first\",\n    \"Partitions before ceilings and most finishes\",\n    \"HVAC before late electrical second-fix where relevant\",\n    \"Outdoor Areas before Closeout where relevant\",\n    \"Testing and Handover last\"\n  ],\n  specialist_outputs: {\n    doors_and_partitions: $(\u0027Doors and Partitions Expert\u0027).item.json.output,\n    wood_works: $(\u0027Wood Works Expert\u0027).item.json.output,\n    ceilings: $(\u0027Ceilings Expert\u0027).item.json.output,\n    floor_finishes: $(\u0027Floor Finishes Expert\u0027).item.json.output,\n    wall_finishes: $(\u0027Wall Finishes Expert\u0027).item.json.output,\n    hvac: $(\u0027HVAC Expert\u0027).item.json.output,\n    electrical: $(\u0027Electrical Expert\u0027).item.json.output,\n    miscellaneous: $(\u0027Miscellaneous Expert\u0027).item.json.output,\n    outdoor_areas: $(\u0027Outdoor Areas Expert\u0027).item.json.output\n  }\n}, null, 2) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       896,
+                                       464
+                                   ],
+                      "id":  "467f082b-4e61-4dbb-bb5b-fb4283aca019",
+                      "name":  "Project Manager "
+                  },
+                  {
+                      "parameters":  {
+                                         "folderId":  "1cPA1T1HSkcyQrGTi7UaMD2tdAA6VoWZL",
+                                         "title":  "Tasks for Primavera"
+                                     },
+                      "type":  "n8n-nodes-base.googleDocs",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1472,
+                                       464
+                                   ],
+                      "id":  "3f84a860-e057-438e-b6a8-dfa098678f5d",
+                      "name":  "Create the Document",
+                      "credentials":  {
+                                          "googleDocsOAuth2Api":  {
+                                                                      "id":  "K3x1efrv6la4CcwK",
+                                                                      "name":  "Google Docs account"
+                                                                  }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentURL":  "={{ $json.id }}",
+                                         "actionsUi":  {
+                                                           "actionFields":  [
+                                                                                {
+                                                                                    "action":  "insert",
+                                                                                    "text":  "={{ $(\u0027Project Manager \u0027).item.json.output }}"
+                                                                                }
+                                                                            ]
+                                                       }
+                                     },
+                      "type":  "n8n-nodes-base.googleDocs",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1680,
+                                       464
+                                   ],
+                      "id":  "83ece862-0f17-4596-8935-159a8adcafae",
+                      "name":  "Final Outcome",
+                      "credentials":  {
+                                          "googleDocsOAuth2Api":  {
+                                                                      "id":  "K3x1efrv6la4CcwK",
+                                                                      "name":  "Google Docs account"
+                                                                  }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "type":  "n8n-nodes-base.manualTrigger",
+                      "typeVersion":  1,
+                      "position":  [
+                                       0,
+                                       0
+                                   ],
+                      "id":  "2b086d1a-b349-4aea-a7d5-658375406d28",
+                      "name":  "Start Workflow"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "download",
+                                         "fileId":  {
+                                                        "__rl":  true,
+                                                        "value":  "1-3_DJ3JDV9Lw9uGdQjrHhDDCOQ_inlRn",
+                                                        "mode":  "list",
+                                                        "cachedResultName":  "BOQ.pdf",
+                                                        "cachedResultUrl":  "https://drive.google.com/file/d/1-3_DJ3JDV9Lw9uGdQjrHhDDCOQ_inlRn/view?usp=drivesdk"
+                                                    },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.googleDrive",
+                      "typeVersion":  3,
+                      "position":  [
+                                       272,
+                                       0
+                                   ],
+                      "id":  "affbae79-ae34-4bce-b7b8-eb2b49970088",
+                      "name":  "Download the BOQ",
+                      "credentials":  {
+                                          "googleDriveOAuth2Api":  {
+                                                                       "id":  "q21zTdnxS5rsWtJb",
+                                                                       "name":  "Google Drive account"
+                                                                   }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "pdf",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.extractFromFile",
+                      "typeVersion":  1,
+                      "position":  [
+                                       480,
+                                       0
+                                   ],
+                      "id":  "c7c1fc03-3982-42ee-91d2-d33035ee5939",
+                      "name":  "Extract Text form BOQ"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const raw = $(\u0027Project Manager \u0027).item.json.output;\n\nfunction parseProjectManagerOutput(value) {\n  if (Array.isArray(value)) return value;\n  if (value \u0026\u0026 Array.isArray(value.schedule)) return value.schedule;\n  if (typeof value === \u0027string\u0027) {\n    const trimmed = value.trim();\n    try {\n      const parsed = JSON.parse(trimmed);\n      if (Array.isArray(parsed)) return parsed;\n      if (parsed \u0026\u0026 Array.isArray(parsed.schedule)) return parsed.schedule;\n    } catch {}\n    const start = trimmed.indexOf(\u0027[\u0027);\n    const end = trimmed.lastIndexOf(\u0027]\u0027);\n    if (start !== -1 \u0026\u0026 end !== -1 \u0026\u0026 end \u003e start) {\n      const fragment = trimmed.slice(start, end + 1);\n      return JSON.parse(fragment);\n    }\n  }\n  throw new Error(\u0027Project Manager output is not valid JSON array data.\u0027);\n}\n\nfunction normalizeWbs(wbs) {\n  return String(wbs || \u0027\u0027).trim();\n}\n\nfunction normalizeActivityName(name) {\n  return String(name || \u0027\u0027).trim().replace(/\\s{2,}/g, \u0027 \u0027);\n}\n\nfunction normalizePredecessor(value) {\n  return String(value || \u0027\u0027).trim();\n}\n\nfunction normalizeDuration(value) {\n  const n = Number(value);\n  if (!Number.isFinite(n)) return 1;\n  return n === 0 ? 0 : Math.max(1, Math.round(n));\n}\n\nconst rows = parseProjectManagerOutput(raw)\n  .map((row) =\u003e ({\n    \"WBS\": normalizeWbs(row[\"WBS\"] ?? row.wbs),\n    \"Activity Name\": normalizeActivityName(row[\"Activity Name\"] ?? row.activity_name),\n    \"Duration (Days)\": normalizeDuration(row[\"Duration (Days)\"] ?? row.duration_days),\n    \"Predecessor(s)\": normalizePredecessor(row[\"Predecessor(s)\"] ?? row.predecessors),\n  }))\n  .filter((row) =\u003e row[\"WBS\"] \u0026\u0026 row[\"Activity Name\"]);\n\nconst seen = new Set();\nconst unique = rows.filter((row) =\u003e {\n  const key = `${row[\"WBS\"]}||${row[\"Activity Name\"]}`;\n  if (seen.has(key)) return false;\n  seen.add(key);\n  return true;\n});\n\nreturn unique.map((row) =\u003e ({ json: row }));"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1264,
+                                       656
+                                   ],
+                      "id":  "0db3e1fb-5f33-40d9-aa76-52686cf4b13b",
+                      "name":  "Conver Binary to linear"
+                  }
+              ],
+    "pinData":  {
+
+                },
+    "connections":  {
+                        "OpenAI Chat Model":  {
+                                                  "ai_languageModel":  [
+                                                                           [
+                                                                               {
+                                                                                   "node":  "Doors and Partitions Expert",
+                                                                                   "type":  "ai_languageModel",
+                                                                                   "index":  0
+                                                                               }
+                                                                           ]
+                                                                       ]
+                                              },
+                        "OpenAI Chat Model1":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Project Manager ",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model2":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Wood Works Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model3":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Ceilings Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model4":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Floor Finishes Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model5":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Wall Finishes Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model6":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "HVAC Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model7":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Electrical Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model8":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Miscellaneous Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "OpenAI Chat Model9":  {
+                                                   "ai_languageModel":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Outdoor Areas Expert",
+                                                                                    "type":  "ai_languageModel",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                               },
+                        "Doors and Partitions Expert":  {
+                                                            "main":  [
+                                                                         [
+                                                                             {
+                                                                                 "node":  "Wood Works Expert",
+                                                                                 "type":  "main",
+                                                                                 "index":  0
+                                                                             }
+                                                                         ]
+                                                                     ]
+                                                        },
+                        "Wood Works Expert":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Ceilings Expert",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Ceilings Expert":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Floor Finishes Expert",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Floor Finishes Expert":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Wall Finishes Expert",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  },
+                        "Wall Finishes Expert":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "HVAC Expert",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "HVAC Expert":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Electrical Expert",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        },
+                        "Electrical Expert":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Miscellaneous Expert",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Outdoor Areas Expert":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "Project Manager ",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "Miscellaneous Expert":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "Outdoor Areas Expert",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "Project Manager ":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Conver Binary to linear",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  },
+                                                                  {
+                                                                      "node":  "Create the Document",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Create the Document":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Final Outcome",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Start Workflow":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Download the BOQ",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           },
+                        "Download the BOQ":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Extract Text form BOQ",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Extract Text form BOQ":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Doors and Partitions Expert",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  },
+                        "Conver Binary to linear":  {
+                                                        "main":  [
+                                                                     [
+                                                                         {
+                                                                             "node":  "Create the Document",
+                                                                             "type":  "main",
+                                                                             "index":  0
+                                                                         }
+                                                                     ]
+                                                                 ]
+                                                    }
+                    },
+    "active":  false,
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "versionId":  "1dd81f89-9131-462c-a4e9-2fc9f6960a0c",
+    "meta":  {
+                 "templateCredsSetupCompleted":  true,
+                 "instanceId":  "2763494ec8df367f2467d44f486abcaac0a28ff2c2f178fbab9016bcaf6ca345"
+             },
+    "id":  "Etx24hbq3pUjMqz5",
+    "tags":  [
+
+             ]
+}

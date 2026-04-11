@@ -5,6 +5,7 @@ const systemDateLabel = new Date().toLocaleDateString(undefined, {
   month: "short",
   day: "numeric",
 });
+
 const apiBaseUrl = (import.meta.env.VITE_API_URL || "https://boq-backend-tfyq.onrender.com").replace(/\/$/, "");
 
 function getApiUrl(path) {
@@ -15,13 +16,13 @@ function App() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const [busyAgentId, setBusyAgentId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadBusy, setUploadBusy] = useState(false);
+  const [workflowBusy, setWorkflowBusy] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatBusy, setChatBusy] = useState(false);
-  const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     loadDashboard();
@@ -33,7 +34,6 @@ function App() {
 
   async function requestJson(url, options) {
     let response;
-
     try {
       response = await fetch(getApiUrl(url), options);
     } catch {
@@ -47,13 +47,12 @@ function App() {
       try {
         data = JSON.parse(raw);
       } catch {
-        throw new Error(`The API returned a non-JSON response with status ${response.status}. Check that the backend is running cleanly.`);
+        throw new Error(`The API returned a non-JSON response with status ${response.status}.`);
       }
     }
 
     if (!response.ok) {
-      const detail =
-        data && typeof data === "object" && "detail" in data ? data.detail : `Request failed with status ${response.status}.`;
+      const detail = data && typeof data === "object" && "detail" in data ? data.detail : `Request failed with status ${response.status}.`;
       throw new Error(detail);
     }
 
@@ -68,29 +67,12 @@ function App() {
     setLoading(true);
     setErrorMessage("");
     try {
-      const data = await requestJson("/api/dashboard");
-      setDashboard(data);
+      setDashboard(await requestJson("/api/dashboard"));
     } catch (error) {
       setDashboard(null);
       setErrorMessage(error.message);
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function runAgent(agentId) {
-    setBusyAgentId(agentId);
-    setErrorMessage("");
-    try {
-      const data = await requestJson(`/api/agents/${agentId}/run`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      setDashboard(data);
-    } catch (error) {
-      setErrorMessage(error.message);
-    } finally {
-      setBusyAgentId(null);
     }
   }
 
@@ -120,6 +102,22 @@ function App() {
     }
   }
 
+  async function runWorkflow() {
+    setWorkflowBusy(true);
+    setErrorMessage("");
+    try {
+      const data = await requestJson("/api/workflow/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      setDashboard(data);
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setWorkflowBusy(false);
+    }
+  }
+
   async function submitChat(event) {
     event.preventDefault();
     if (!chatInput.trim()) return;
@@ -142,31 +140,38 @@ function App() {
   }
 
   if (loading || !dashboard) {
-    return (
-      <div className="loading-shell">
-        {errorMessage || "Loading BOQ agent console..."}
-      </div>
-    );
+    return <div className="loading-shell">{errorMessage || "Loading BOQ workflow console..."}</div>;
   }
 
-  const { agents, planner, timeline, chat_history: chatHistory, project_summary: summary, boq_upload: boqUpload } = dashboard;
-  const upcomingActivities = timeline.schedule.slice(0, 6);
+  const {
+    agents,
+    planner,
+    timeline,
+    workflow,
+    boq_upload: boqUpload,
+    chat_history: chatHistory,
+    project_summary: summary,
+  } = dashboard;
+
+  const upcomingActivities = timeline.schedule.slice(0, 8);
+  const readyToRun = Boolean(boqUpload.stored_path) && !workflowBusy;
 
   return (
     <main className="page-shell">
       {errorMessage ? <div className="loading-shell">{errorMessage}</div> : null}
+
       <section className="hero-panel">
         <div className="hero-copy-block">
-          <p className="eyebrow">Construction AI control room</p>
-          <h1>Read the BOQ, split it by package, and turn it into a cleaner working schedule.</h1>
+          <p className="eyebrow">Construction AI workflow</p>
+          <h1>Upload the BOQ once, launch all specialists together, and export Primavera-ready logic.</h1>
           <p className="hero-copy">
-            This workspace is set up for the next step: importing an Excel BOQ, letting each agent read
-            its package, and then assembling a time-based schedule you can adjust when site conditions change.
+            The specialist agents now run as one coordinated workflow. After upload, one run starts all package
+            extractors in parallel, then the project manager compiles their outputs into the Excel import format.
           </p>
           <div className="hero-notes">
-            <span>Excel BOQ intake live</span>
-            <span>Agent-by-agent extraction</span>
-            <span>Project manager export</span>
+            <span>Parallel specialist run</span>
+            <span>Project manager consolidation</span>
+            <span>Primavera sample-aligned workbook</span>
           </div>
         </div>
         <div className="hero-stats">
@@ -175,11 +180,11 @@ function App() {
             <strong>{agents.length}</strong>
           </article>
           <article>
-            <span>Project start</span>
-            <strong>{timeline.start_date}</strong>
+            <span>Workflow</span>
+            <strong>{workflow.status}</strong>
           </article>
           <article>
-            <span>Projected finish</span>
+            <span>Finish</span>
             <strong>{timeline.finish_date}</strong>
           </article>
           <article>
@@ -194,21 +199,21 @@ function App() {
           <span className="workflow-step">01</span>
           <div>
             <strong>Upload BOQ</strong>
-            <p>Prepare the interface for an Excel-based BOQ intake flow.</p>
+            <p>Store the Excel workbook and prepare the backend parser.</p>
           </div>
         </article>
         <article className="workflow-card">
           <span className="workflow-step">02</span>
           <div>
-            <strong>Run agents</strong>
-            <p>Each specialist extracts scheduler-ready activities from its WBS package.</p>
+            <strong>Run all specialists</strong>
+            <p>All WBS extractors start together instead of being launched one by one.</p>
           </div>
         </article>
         <article className="workflow-card">
           <span className="workflow-step">03</span>
           <div>
-            <strong>Build schedule</strong>
-            <p>The planner combines those outputs into a readable sequence and timeline.</p>
+            <strong>Export for Primavera</strong>
+            <p>The project manager builds `TASK`, `TASKPRED`, and `USERDATA` sheets.</p>
           </div>
         </article>
       </section>
@@ -219,16 +224,16 @@ function App() {
           <strong>{summary.total_duration_days}</strong>
         </div>
         <div>
-          <span>Delay events logged</span>
-          <strong>{summary.delay_events}</strong>
+          <span>Primavera rows</span>
+          <strong>{summary.primavera_rows}</strong>
+        </div>
+        <div>
+          <span>Uploaded BOQ rows</span>
+          <strong>{boqUpload.row_count ?? 0}</strong>
         </div>
         <div>
           <span>Last action</span>
           <strong>{summary.last_action}</strong>
-        </div>
-        <div>
-          <span>Planner agent</span>
-          <strong>{planner.name}</strong>
         </div>
       </section>
 
@@ -237,18 +242,20 @@ function App() {
           <section className="panel intake-panel">
             <div className="panel-head">
               <div>
-                <p className="eyebrow">BOQ intake</p>
-                <h2>Upload BOQ Excel</h2>
+                <p className="eyebrow">Workflow intake</p>
+                <h2>Upload the BOQ and run the full pipeline</h2>
                 <p className="section-copy">
-                  Upload the BOQ workbook here, then let the project manager agent rebuild the time schedule
-                  and prepare the Primavera P6 import workbook.
+                  The full run now starts every package agent together, waits for them all to finish, and then lets the
+                  project manager generate the Primavera import workbook in the sample structure you attached.
                 </p>
               </div>
+              <span className={`status-pill ${workflow.status}`}>{workflow.status}</span>
             </div>
+
             <div className="intake-shell">
               <div className="intake-dropzone">
                 <strong>{selectedFile ? selectedFile.name : "Choose `.xlsx` BOQ file"}</strong>
-                <span>{selectedFile ? "Ready to upload" : "Select a BOQ workbook to load into the workflow"}</span>
+                <span>{selectedFile ? "Ready to upload" : "Select the BOQ workbook that will drive all specialist agents"}</span>
                 <input
                   ref={fileInputRef}
                   className="file-input"
@@ -259,25 +266,31 @@ function App() {
                 <button className="run-button" type="button" onClick={uploadBoq} disabled={!selectedFile || uploadBusy}>
                   {uploadBusy ? "Uploading..." : "Upload BOQ Excel"}
                 </button>
+                <button className="run-button secondary-button" type="button" onClick={runWorkflow} disabled={!readyToRun}>
+                  {workflowBusy ? "Running Workflow..." : "Run Full Workflow"}
+                </button>
               </div>
+
               <div className="intake-info">
-                <div>
-                  <span>Expected input</span>
-                  <strong>Excel BOQ sheet</strong>
-                </div>
-                <div>
-                  <span>Parsing target</span>
-                  <strong>Trade packages and quantities</strong>
-                </div>
-                <div>
-                  <span>Final output</span>
-                  <strong>Primavera P6 import workbook</strong>
-                </div>
                 <div>
                   <span>Latest upload</span>
                   <strong>{boqUpload.filename ?? "No file uploaded"}</strong>
                   <span>{boqUpload.status}</span>
-                  <span>{boqUpload.uploaded_at ?? "Waiting for BOQ file"}</span>
+                </div>
+                <div>
+                  <span>Detected sheet</span>
+                  <strong>{boqUpload.detected_sheet ?? "Waiting for workflow run"}</strong>
+                  <span>{boqUpload.uploaded_at ?? "No upload timestamp yet"}</span>
+                </div>
+                <div>
+                  <span>Workflow mode</span>
+                  <strong>{workflow.mode}</strong>
+                  <span>Last run: {workflow.last_run ?? "Not run yet"}</span>
+                </div>
+                <div>
+                  <span>Planner export</span>
+                  <strong>{planner.export_file}</strong>
+                  <span>Updated: {planner.export_updated_at ?? "Not generated yet"}</span>
                 </div>
               </div>
             </div>
@@ -286,10 +299,10 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow">Specialist agents</p>
-              <h2>Clear package cards for each BOQ extractor</h2>
+              <h2>All specialist packages now feed one shared workflow run</h2>
               <p className="section-copy">
-                Each card surfaces only the most useful information: what the agent reads, how it formats
-                the output, and a short preview of the activities it produces.
+                These cards are now status and output previews. They update after the parallel workflow finishes rather
+                than waiting for manual per-agent runs.
               </p>
             </div>
           </div>
@@ -305,27 +318,21 @@ function App() {
                 <p className="agent-name">{agent.agent_name}</p>
                 <p className="agent-task">{agent.task}</p>
                 <div className="agent-guidelines">
-                  <span>{agent.language_guidelines.clarity}</span>
-                  <span>{agent.language_guidelines.granularity}</span>
+                  <span>{agent.boq_matches} BOQ matches</span>
+                  <span>{agent.latest_output.length} output activities</span>
+                  <span>{agent.last_run ?? "Not run yet"}</span>
                 </div>
                 <div className="sample-list">
                   <div className="sample-list-head">
                     <span>Activity preview</span>
                   </div>
-                  {agent.latest_output.slice(0, 2).map((item) => (
+                  {agent.latest_output.slice(0, 3).map((item) => (
                     <div key={item["Activity Name"]}>
                       <strong>{item["Activity Name"]}</strong>
                       <span>{item.WBS}</span>
                     </div>
                   ))}
                 </div>
-                <button
-                  className="run-button"
-                  onClick={() => runAgent(agent.id)}
-                  disabled={busyAgentId === agent.id}
-                >
-                  {busyAgentId === agent.id ? "Running..." : "Run agent"}
-                </button>
               </article>
             ))}
           </div>
@@ -335,14 +342,14 @@ function App() {
           <section className="panel">
             <div className="panel-head">
               <div>
-                <p className="eyebrow">Final agent</p>
+                <p className="eyebrow">Project manager</p>
                 <h2>{planner.name}</h2>
                 <p className="section-copy">
-                  The project manager agent reads the uploaded BOQ context, collects the specialist outputs,
-                  rebuilds the schedule logic, and prepares the final Excel file for Primavera P6 import.
+                  This agent now sits at the end of the shared workflow, consuming all package outputs and formatting the
+                  final workbook for Primavera import.
                 </p>
               </div>
-              <span className="planner-badge">P6-ready logic</span>
+              <span className="planner-badge">TASK / TASKPRED / USERDATA</span>
             </div>
             <p className="agent-name">{planner.role}</p>
             <p className="planner-goal">{planner.goal}</p>
@@ -352,18 +359,11 @@ function App() {
               ))}
             </div>
             <div className="planner-actions">
-              <button
-                className="run-button"
-                onClick={() => runAgent(planner.id)}
-                disabled={busyAgentId === planner.id}
-              >
-                {busyAgentId === planner.id ? "Building export..." : "Run Project Manager Agent"}
-              </button>
               <a className="run-button export-link" href={getApiUrl("/api/exports/primavera.xlsx")} target="_blank" rel="noreferrer">
                 Download Primavera Import XLSX
               </a>
               <p className="planner-export-note">
-                Includes activity rows, FS relationships, and a review sheet with the current schedule dates.
+                The export follows the sheet naming and column pattern from your attached Primavera sample workbook.
               </p>
               <div className="planner-meta">
                 <span>Status</span>
@@ -372,6 +372,8 @@ function App() {
                 <strong>{planner.last_run ?? "Not run yet"}</strong>
                 <span>Export updated</span>
                 <strong>{planner.export_updated_at ?? "Not generated yet"}</strong>
+                <span>BOQ sheet</span>
+                <strong>{boqUpload.detected_sheet ?? "Unknown"}</strong>
               </div>
             </div>
           </section>
@@ -379,10 +381,11 @@ function App() {
           <section className="panel timeline-panel">
             <div className="panel-head">
               <div>
-                <p className="eyebrow">Live schedule</p>
-                <h2>Upcoming schedule view</h2>
+                <p className="eyebrow">Concurrent schedule</p>
+                <h2>Upcoming activity view</h2>
                 <p className="section-copy">
-                  Dates update whenever an agent reruns or a work-loss event is logged through chat.
+                  The project manager now builds package schedules from a shared mobilization point and rolls them into a
+                  single finish date for export.
                 </p>
               </div>
               <span className="finish-date">{timeline.finish_date}</span>
@@ -409,35 +412,15 @@ function App() {
                 </article>
               ))}
             </div>
-            <p className="schedule-note">
-              Showing the next {upcomingActivities.length} activities to keep the screen lighter. The full
-              schedule logic is still active in the backend.
-            </p>
-
-            <div className="event-list">
-              <h3>Timeline events</h3>
-              {timeline.events.length === 0 ? (
-                <p>No delay events yet. The chatbot can log one if work stops.</p>
-              ) : (
-                timeline.events.map((eventItem) => (
-                  <div className="event-row" key={eventItem.id}>
-                    <strong>{eventItem.date}</strong>
-                    <span>{eventItem.reason}</span>
-                    <span>{eventItem.lost_days} lost day(s)</span>
-                  </div>
-                ))
-              )}
-            </div>
           </section>
 
           <section className="panel chat-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Project assistant</p>
-                <h2>Simple, plain-language project actions</h2>
+                <h2>Plain-language support</h2>
                 <p className="section-copy">
-                  Use plain language. The assistant can explain a package, rerun an agent, or push the
-                  schedule if the site loses a day.
+                  You can still ask about an agent, describe a delay, or review the current finish date in plain language.
                 </p>
               </div>
             </div>
@@ -454,7 +437,7 @@ function App() {
               <textarea
                 value={chatInput}
                 onChange={(event) => setChatInput(event.target.value)}
-                placeholder="Try: I couldn't work today, push the schedule by 1 day."
+                placeholder="Try: We lost 2 days because ceiling access was blocked."
                 rows={3}
               />
               <button type="submit" disabled={chatBusy}>
