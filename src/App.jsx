@@ -19,6 +19,13 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadBusy, setUploadBusy] = useState(false);
   const [workflowBusy, setWorkflowBusy] = useState(false);
+  const [schemaCheck, setSchemaCheck] = useState({
+    status: "checking",
+    message: "Checking agent schemas...",
+    count: 0,
+    models: [],
+  });
+  const [workflowProgress, setWorkflowProgress] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [chatBusy, setChatBusy] = useState(false);
   const fileInputRef = useRef(null);
@@ -26,7 +33,13 @@ function App() {
 
   useEffect(() => {
     loadDashboard();
+    loadAgentSchemas();
   }, []);
+
+  useEffect(() => {
+    if (!dashboard || workflowBusy) return;
+    setWorkflowProgress(buildWorkflowSteps(dashboard, schemaCheck));
+  }, [dashboard, schemaCheck, workflowBusy]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -63,11 +76,121 @@ function App() {
     return data;
   }
 
+  function isMissingEndpoint(error) {
+    const message = String(error?.message || "");
+    return message.toLowerCase().includes("not found") || message.includes("404");
+  }
+
+  function readSchemaSummary(data) {
+    const runtime = data?.runtime || {};
+    const schemaAgents = Array.isArray(data)
+      ? data
+      : data.agents ||
+        data.schemas ||
+        [
+          data.specialist_agent_output ? { name: "specialist_agent_output", model: runtime.model, provider: "openai" } : null,
+          data.project_manager_agent_output ? { name: "project_manager_agent_output", model: runtime.model, provider: "openai" } : null,
+        ].filter(Boolean);
+    const count = Array.isArray(schemaAgents) ? schemaAgents.length : 0;
+    const modelNames = schemaAgents
+      .map((agent) => agent.model || agent.openai_model || agent.model_name)
+      .filter(Boolean);
+    const uniqueModels = [...new Set(modelNames)];
+    const openAiMarked =
+      runtime.enabled === true ||
+      runtime.package_available === true ||
+      data.openai_agents === true ||
+      data.provider === "openai" ||
+      schemaAgents.some((agent) => String(agent.provider || agent.type || "").toLowerCase().includes("openai")) ||
+      uniqueModels.some((model) => /^gpt-|^o\d/i.test(model));
+
+    return {
+      count,
+      models: uniqueModels,
+      openAiMarked,
+      runtime,
+    };
+  }
+
+  function buildWorkflowSteps(currentDashboard, schemaState = schemaCheck) {
+    if (!currentDashboard) return [];
+    const orderedAgents = [...currentDashboard.agents].sort((a, b) => a.sequence - b.sequence);
+    return [
+      {
+        id: "schemas",
+        label: "Verify OpenAI model setup",
+        status: schemaState.status,
+        note: schemaState.message,
+      },
+      ...orderedAgents.map((agent) => ({
+        id: agent.id,
+        label: `${agent.sequence}. ${agent.wbs_category}`,
+        status: agent.status || "waiting",
+        note: agent.last_run ? `Last run ${agent.last_run}` : agent.agent_name,
+      })),
+      {
+        id: currentDashboard.planner.id,
+        label: currentDashboard.planner.name,
+        status: currentDashboard.planner.status || "waiting",
+        note: currentDashboard.planner.last_run ? `Last run ${currentDashboard.planner.last_run}` : "Build schedule and export",
+      },
+    ];
+  }
+
+  function updateWorkflowStep(stepId, status, note = "") {
+    setWorkflowProgress((steps) => steps.map((step) => (step.id === stepId ? { ...step, status, note } : step)));
+  }
+
+  async function loadAgentSchemas() {
+    const initial = { status: "checking", message: "Checking agent schemas...", count: 0, models: [] };
+    setSchemaCheck(initial);
+
+    try {
+      const data = await requestJson("/api/agents/schemas");
+      const summary = readSchemaSummary(data);
+      const runtimeMessage = summary.runtime.enabled
+        ? `OpenAI model schemas verified. Live model: ${summary.runtime.model}.`
+        : summary.runtime.package_available
+          ? `OpenAI package detected, but the backend is missing ${summary.runtime.missing?.join(", ") || "required runtime settings"}.`
+          : "OpenAI runtime is not installed on the backend.";
+      const next = {
+        status: summary.runtime.enabled ? "verified" : summary.openAiMarked ? "fallback" : "error",
+        message: runtimeMessage,
+        count: summary.count,
+        models: summary.models,
+      };
+      setSchemaCheck(next);
+      return next;
+    } catch (error) {
+      if (isMissingEndpoint(error)) {
+        const next = {
+          status: "fallback",
+          message: "Schema endpoint is unavailable on this backend; workflow can still run.",
+          count: 0,
+          models: [],
+        };
+        setSchemaCheck(next);
+        return next;
+      }
+
+      const next = {
+        status: "error",
+        message: error.message,
+        count: 0,
+        models: [],
+      };
+      setSchemaCheck(next);
+      return next;
+    }
+  }
+
   async function loadDashboard() {
     setLoading(true);
     setErrorMessage("");
     try {
-      setDashboard(await requestJson("/api/dashboard"));
+      const data = await requestJson("/api/dashboard");
+      setDashboard(data);
+      setWorkflowProgress(buildWorkflowSteps(data, schemaCheck));
     } catch (error) {
       setDashboard(null);
       setErrorMessage(error.message);
@@ -91,6 +214,7 @@ function App() {
         body: selectedFile,
       });
       setDashboard(data);
+      setWorkflowProgress(buildWorkflowSteps(data, schemaCheck));
       setSelectedFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -103,16 +227,31 @@ function App() {
   }
 
   async function runWorkflow() {
+    if (!dashboard) return;
+
     setWorkflowBusy(true);
     setErrorMessage("");
+
+    const schemaState = await loadAgentSchemas();
+    setWorkflowProgress(buildWorkflowSteps(dashboard, schemaState));
+
     try {
+      updateWorkflowStep("schemas", schemaState.status === "error" ? "failed" : schemaState.status, schemaState.message);
       const data = await requestJson("/api/workflow/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
       setDashboard(data);
+      setWorkflowProgress(buildWorkflowSteps(data, schemaState));
     } catch (error) {
       setErrorMessage(error.message);
+      setWorkflowProgress((steps) =>
+        steps.map((step) =>
+          step.status === "running" || step.status === "queued" || step.status === "waiting"
+            ? { ...step, status: "failed", note: error.message }
+            : step,
+        ),
+      );
     } finally {
       setWorkflowBusy(false);
     }
@@ -153,8 +292,10 @@ function App() {
     project_summary: summary,
   } = dashboard;
 
+  const orderedAgents = [...agents].sort((a, b) => a.sequence - b.sequence);
   const upcomingActivities = timeline.schedule.slice(0, 8);
   const readyToRun = Boolean(boqUpload.stored_path) && !workflowBusy;
+  const stepsToRender = workflowProgress.length ? workflowProgress : buildWorkflowSteps(dashboard, schemaCheck);
 
   return (
     <main className="page-shell">
@@ -166,11 +307,11 @@ function App() {
           <h1>Upload the BOQ once, launch all specialists together, and export Primavera-ready logic.</h1>
           <p className="hero-copy">
             The specialist agents now run as one coordinated workflow. After upload, one run starts all package
-            extractors in parallel, then the project manager compiles their outputs into the Excel import format.
+            extractors, then the project manager compiles their outputs into the Primavera import format.
           </p>
           <div className="hero-notes">
-            <span>Parallel specialist run</span>
-            <span>Project manager consolidation</span>
+            <span>OpenAI-backed agents</span>
+            <span>Structured JSON extraction</span>
             <span>Primavera sample-aligned workbook</span>
           </div>
         </div>
@@ -199,14 +340,14 @@ function App() {
           <span className="workflow-step">01</span>
           <div>
             <strong>Upload BOQ</strong>
-            <p>Store the Excel workbook and prepare the backend parser.</p>
+            <p>Store the workbook and prepare the backend parser.</p>
           </div>
         </article>
         <article className="workflow-card">
           <span className="workflow-step">02</span>
           <div>
-            <strong>Run all specialists</strong>
-            <p>All WBS extractors start together instead of being launched one by one.</p>
+            <strong>Run workflow</strong>
+            <p>Launch all specialist agents through the backend workflow endpoint.</p>
           </div>
         </article>
         <article className="workflow-card">
@@ -245,8 +386,8 @@ function App() {
                 <p className="eyebrow">Workflow intake</p>
                 <h2>Upload the BOQ and run the full pipeline</h2>
                 <p className="section-copy">
-                  The full run now starts every package agent together, waits for them all to finish, and then lets the
-                  project manager generate the Primavera import workbook in the sample structure you attached.
+                  Upload the workbook, then trigger the backend workflow that runs the specialists and lets the project manager
+                  generate the final Primavera import workbook.
                 </p>
               </div>
               <span className={`status-pill ${workflow.status}`}>{workflow.status}</span>
@@ -255,7 +396,7 @@ function App() {
             <div className="intake-shell">
               <div className="intake-dropzone">
                 <strong>{selectedFile ? selectedFile.name : "Choose `.xlsx` BOQ file"}</strong>
-                <span>{selectedFile ? "Ready to upload" : "Select the BOQ workbook that will drive all specialist agents"}</span>
+                <span>{selectedFile ? "Ready to upload" : "Select the BOQ workbook that will drive the workflow"}</span>
                 <input
                   ref={fileInputRef}
                   className="file-input"
@@ -299,16 +440,15 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow">Specialist agents</p>
-              <h2>All specialist packages now feed one shared workflow run</h2>
+              <h2>WBS package outputs</h2>
               <p className="section-copy">
-                These cards are now status and output previews. They update after the parallel workflow finishes rather
-                than waiting for manual per-agent runs.
+                These cards show each agent's current output preview, backend status, and most recent run details.
               </p>
             </div>
           </div>
 
           <div className="agent-grid">
-            {agents.map((agent) => (
+            {orderedAgents.map((agent) => (
               <article className="agent-card" key={agent.id}>
                 <div className="agent-card-top">
                   <span className="agent-seq">Agent {agent.sequence}</span>
@@ -318,9 +458,9 @@ function App() {
                 <p className="agent-name">{agent.agent_name}</p>
                 <p className="agent-task">{agent.task}</p>
                 <div className="agent-guidelines">
-                  <span>{agent.boq_matches} BOQ matches</span>
+                  <span>{agent.boq_matches ?? 0} BOQ matches</span>
                   <span>{agent.latest_output.length} output activities</span>
-                  <span>{agent.last_run ?? "Not run yet"}</span>
+                  <span>{agent.last_run_source ?? "Waiting for run"}</span>
                 </div>
                 <div className="sample-list">
                   <div className="sample-list-head">
@@ -332,6 +472,10 @@ function App() {
                       <span>{item.WBS}</span>
                     </div>
                   ))}
+                </div>
+                <div className="agent-run-meta">
+                  <span>Last run</span>
+                  <strong>{agent.last_run ?? "Waiting for full workflow"}</strong>
                 </div>
               </article>
             ))}
@@ -345,8 +489,7 @@ function App() {
                 <p className="eyebrow">Project manager</p>
                 <h2>{planner.name}</h2>
                 <p className="section-copy">
-                  This agent now sits at the end of the shared workflow, consuming all package outputs and formatting the
-                  final workbook for Primavera import.
+                  The project manager consolidates all package outputs and formats the final workbook for Primavera import.
                 </p>
               </div>
               <span className="planner-badge">TASK / TASKPRED / USERDATA</span>
@@ -370,8 +513,8 @@ function App() {
                 <strong>{planner.status}</strong>
                 <span>Last run</span>
                 <strong>{planner.last_run ?? "Not run yet"}</strong>
-                <span>Export updated</span>
-                <strong>{planner.export_updated_at ?? "Not generated yet"}</strong>
+                <span>Run source</span>
+                <strong>{planner.last_run_source ?? "Unknown"}</strong>
                 <span>BOQ sheet</span>
                 <strong>{boqUpload.detected_sheet ?? "Unknown"}</strong>
               </div>
@@ -384,8 +527,7 @@ function App() {
                 <p className="eyebrow">Concurrent schedule</p>
                 <h2>Upcoming activity view</h2>
                 <p className="section-copy">
-                  The project manager now builds package schedules from a shared mobilization point and rolls them into a
-                  single finish date for export.
+                  This is the current schedule snapshot that will be exported to Primavera.
                 </p>
               </div>
               <span className="finish-date">{timeline.finish_date}</span>

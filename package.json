@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.mjs",
+    "dev": "vite",
     "frontend": "vite",
     "backend": "py -3 -m uvicorn backend.main:app --host 127.0.0.1 --port 8000",
     "backend:watch": "py -3 -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload",
