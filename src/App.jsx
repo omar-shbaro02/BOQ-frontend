@@ -12,6 +12,12 @@ function getApiUrl(path) {
   return `${apiBaseUrl}${path}`;
 }
 
+function isSupportedBoqFile(file) {
+  if (!file) return false;
+  const name = String(file.name || "").toLowerCase();
+  return [".xlsx", ".xls", ".pdf"].some((suffix) => name.endsWith(suffix));
+}
+
 function App() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -201,6 +207,10 @@ function App() {
 
   async function uploadBoq() {
     if (!selectedFile) return;
+    if (!isSupportedBoqFile(selectedFile)) {
+      setErrorMessage("Upload a BOQ file in .xlsx, .xls, or .pdf format.");
+      return;
+    }
 
     setUploadBusy(true);
     setErrorMessage("");
@@ -386,7 +396,7 @@ function App() {
                 <p className="eyebrow">Workflow intake</p>
                 <h2>Upload the BOQ and run the full pipeline</h2>
                 <p className="section-copy">
-                  Upload the workbook, then trigger the backend workflow that runs the specialists and lets the project manager
+                  Upload the BOQ file, then trigger the backend workflow that runs the specialists and lets the project manager
                   generate the final Primavera import workbook.
                 </p>
               </div>
@@ -395,17 +405,21 @@ function App() {
 
             <div className="intake-shell">
               <div className="intake-dropzone">
-                <strong>{selectedFile ? selectedFile.name : "Choose `.xlsx` BOQ file"}</strong>
-                <span>{selectedFile ? "Ready to upload" : "Select the BOQ workbook that will drive the workflow"}</span>
+                <strong>{selectedFile ? selectedFile.name : "Choose BOQ file"}</strong>
+                <span>{selectedFile ? "Ready to upload" : "Select a BOQ in Excel or PDF format to drive the workflow"}</span>
                 <input
                   ref={fileInputRef}
                   className="file-input"
                   type="file"
-                  accept=".xlsx,.xls"
-                  onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)}
+                  accept=".xlsx,.xls,.pdf,application/pdf"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    setSelectedFile(file);
+                    setErrorMessage(file && !isSupportedBoqFile(file) ? "Upload a BOQ file in .xlsx, .xls, or .pdf format." : "");
+                  }}
                 />
-                <button className="run-button" type="button" onClick={uploadBoq} disabled={!selectedFile || uploadBusy}>
-                  {uploadBusy ? "Uploading..." : "Upload BOQ Excel"}
+                <button className="run-button" type="button" onClick={uploadBoq} disabled={!selectedFile || uploadBusy || !isSupportedBoqFile(selectedFile)}>
+                  {uploadBusy ? "Uploading..." : "Upload BOQ File"}
                 </button>
                 <button className="run-button secondary-button" type="button" onClick={runWorkflow} disabled={!readyToRun}>
                   {workflowBusy ? "Running Workflow..." : "Run Full Workflow"}
