@@ -36,6 +36,7 @@ function App() {
   const [chatBusy, setChatBusy] = useState(false);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const lastChatSignatureRef = useRef("");
 
   useEffect(() => {
     loadDashboard();
@@ -48,6 +49,14 @@ function App() {
   }, [dashboard, schemaCheck, workflowBusy]);
 
   useEffect(() => {
+    const chatHistory = dashboard?.chat_history || [];
+    if (!chatHistory.length) return;
+
+    const lastEntry = chatHistory[chatHistory.length - 1];
+    const nextSignature = `${chatHistory.length}:${lastEntry?.role || ""}:${lastEntry?.content || ""}`;
+    if (lastChatSignatureRef.current === nextSignature) return;
+
+    lastChatSignatureRef.current = nextSignature;
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [dashboard?.chat_history]);
 
