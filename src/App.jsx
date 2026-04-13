@@ -253,6 +253,19 @@ function App() {
       });
       setDashboard(data);
       setWorkflowProgress(buildWorkflowSteps(data, schemaState));
+
+      let latest = data;
+      const deadline = Date.now() + 10 * 60 * 1000;
+      while (latest?.workflow?.status === "running" && Date.now() < deadline) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        latest = await requestJson("/api/dashboard");
+        setDashboard(latest);
+        setWorkflowProgress(buildWorkflowSteps(latest, schemaState));
+      }
+
+      if (latest?.workflow?.status === "failed") {
+        throw new Error(latest?.chat_history?.at(-1)?.content || "The workflow failed on the backend.");
+      }
     } catch (error) {
       setErrorMessage(error.message);
       setWorkflowProgress((steps) =>
