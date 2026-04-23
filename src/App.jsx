@@ -328,6 +328,7 @@ function App() {
   const upcomingActivities = timeline.schedule.slice(0, 8);
   const readyToRun = Boolean(boqUpload.stored_path) && !workflowBusy;
   const stepsToRender = workflowProgress.length ? workflowProgress : buildWorkflowSteps(dashboard, schemaCheck);
+  const exportRowCount = summary.export_rows ?? summary.primavera_rows ?? timeline.schedule.length;
 
   return (
     <main className="page-shell">
@@ -336,15 +337,15 @@ function App() {
       <section className="hero-panel">
         <div className="hero-copy-block">
           <p className="eyebrow">Construction AI workflow</p>
-          <h1>Upload the BOQ once, launch all specialists together, and export Primavera-ready logic.</h1>
+          <h1>Upload the BOQ once, launch all specialists together, and export Microsoft Project-ready logic.</h1>
           <p className="hero-copy">
             The specialist agents now run as one coordinated workflow. After upload, one run starts all package
-            extractors, then the project manager compiles their outputs into the Primavera import format.
+            extractors, then the project manager compiles their outputs into the Microsoft Project import format.
           </p>
           <div className="hero-notes">
             <span>OpenAI-backed agents</span>
             <span>Structured JSON extraction</span>
-            <span>Primavera sample-aligned workbook</span>
+            <span>Microsoft Project import workbook</span>
           </div>
         </div>
         <div className="hero-stats">
@@ -385,8 +386,8 @@ function App() {
         <article className="workflow-card">
           <span className="workflow-step">03</span>
           <div>
-            <strong>Export for Primavera</strong>
-            <p>The project manager builds `TASK`, `TASKPRED`, and `USERDATA` sheets.</p>
+            <strong>Export for Microsoft Project</strong>
+            <p>The project manager builds a task sheet with `ID`, `Name`, `Duration`, `Start`, `Finish`, and `Dependency` columns.</p>
           </div>
         </article>
       </section>
@@ -397,8 +398,8 @@ function App() {
           <strong>{summary.total_duration_days}</strong>
         </div>
         <div>
-          <span>Primavera rows</span>
-          <strong>{summary.primavera_rows}</strong>
+          <span>Export rows</span>
+          <strong>{exportRowCount}</strong>
         </div>
         <div>
           <span>Uploaded BOQ rows</span>
@@ -419,7 +420,7 @@ function App() {
                 <h2>Upload the BOQ and run the full pipeline</h2>
                 <p className="section-copy">
                   Upload the BOQ file, then trigger the backend workflow that runs the specialists and lets the project manager
-                  generate the final Primavera import workbook.
+                  generate the final Microsoft Project import workbook.
                 </p>
               </div>
               <span className={`status-pill ${workflow.status}`}>{workflow.status}</span>
@@ -525,10 +526,10 @@ function App() {
                 <p className="eyebrow">Project manager</p>
                 <h2>{planner.name}</h2>
                 <p className="section-copy">
-                  The project manager consolidates all package outputs and formats the final workbook for Primavera import.
+                  The project manager consolidates all package outputs and formats the final workbook for Microsoft Project import.
                 </p>
               </div>
-              <span className="planner-badge">TASK / TASKPRED / USERDATA</span>
+              <span className="planner-badge">ID / Name / Duration / Dependency</span>
             </div>
             <p className="agent-name">{planner.role}</p>
             <p className="planner-goal">{planner.goal}</p>
@@ -538,11 +539,11 @@ function App() {
               ))}
             </div>
             <div className="planner-actions">
-              <a className="run-button export-link" href={getApiUrl("/api/exports/primavera.xlsx")} target="_blank" rel="noreferrer">
-                Download Primavera Import XLSX
+              <a className="run-button export-link" href={getApiUrl("/api/exports/ms-project.xlsx")} target="_blank" rel="noreferrer">
+                Download MS Project Import XLSX
               </a>
               <p className="planner-export-note">
-                The export follows the sheet naming and column pattern from your attached Primavera sample workbook.
+                The export follows your attached Microsoft Project import pattern and uses predecessor IDs in the dependency column.
               </p>
               <div className="planner-meta">
                 <span>Status</span>
@@ -563,7 +564,7 @@ function App() {
                 <p className="eyebrow">Concurrent schedule</p>
                 <h2>Upcoming activity view</h2>
                 <p className="section-copy">
-                  This is the current schedule snapshot that will be exported to Primavera.
+                  This is the current schedule snapshot that will be exported to Microsoft Project.
                 </p>
               </div>
               <span className="finish-date">{timeline.finish_date}</span>
