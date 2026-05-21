@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_API_URL = "https://boq-backend-tfyq.onrender.com"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://boq-backend-tfyq.onrender.com/api/:splat"
+  status = 200
+  force = true
