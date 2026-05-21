@@ -358,6 +358,8 @@ function App() {
   const readyToRun = Boolean(boqUpload.stored_path) && !workflowBusy;
   const stepsToRender = workflowProgress.length ? workflowProgress : buildWorkflowSteps(dashboard, schemaCheck);
   const exportRowCount = summary.export_rows ?? summary.primavera_rows ?? timeline.schedule.length;
+  const specialistActivityCount = agents.reduce((total, agent) => total + (agent.latest_output?.length ?? 0), 0);
+  const exportReady = workflow.status === "completed" && planner.status === "exported" && specialistActivityCount > 0 && !workflow.last_error;
 
   return (
     <main className="page-shell">
@@ -568,9 +570,15 @@ function App() {
               ))}
             </div>
             <div className="planner-actions">
-              <a className="run-button export-link" href={getApiUrl("/api/exports/ms-project.xlsx")} target="_blank" rel="noreferrer">
-                Download MS Project Import XLSX
-              </a>
+              {exportReady ? (
+                <a className="run-button export-link" href={getApiUrl("/api/exports/ms-project.xlsx")} target="_blank" rel="noreferrer">
+                  Download MS Project Import XLSX
+                </a>
+              ) : (
+                <button className="run-button export-link" type="button" disabled>
+                  Run Workflow Before Export
+                </button>
+              )}
               <p className="planner-export-note">
                 The export follows your attached Microsoft Project import pattern and uses predecessor IDs in the dependency column.
               </p>
