@@ -6,10 +6,11 @@ const systemDateLabel = new Date().toLocaleDateString(undefined, {
   day: "numeric",
 });
 
-const apiBaseUrl = (import.meta.env.VITE_API_URL || "https://boq-backend-tfyq.onrender.com").replace(/\/$/, "");
+const defaultApiBaseUrl = import.meta.env.PROD ? "https://boq-backend-tfyq.onrender.com" : "";
+const apiBaseUrl = (import.meta.env.VITE_API_URL || defaultApiBaseUrl).replace(/\/$/, "");
 
 function getApiUrl(path) {
-  return `${apiBaseUrl}${path}`;
+  return apiBaseUrl ? `${apiBaseUrl}${path}` : path;
 }
 
 function isSupportedBoqFile(file) {
@@ -39,8 +40,7 @@ function App() {
   const lastChatSignatureRef = useRef("");
 
   useEffect(() => {
-    loadDashboard();
-    loadAgentSchemas();
+    initializeDashboard();
   }, []);
 
   useEffect(() => {
@@ -156,9 +156,33 @@ function App() {
     setWorkflowProgress((steps) => steps.map((step) => (step.id === stepId ? { ...step, status, note } : step)));
   }
 
-  async function loadAgentSchemas() {
+  async function initializeDashboard() {
+    const data = await loadDashboard();
+    if (data) {
+      await loadAgentSchemas(data);
+    }
+  }
+
+  function dashboardHasSchemaEndpoint(currentDashboard) {
+    if (!currentDashboard) return false;
+    if (currentDashboard.planner?.json_schema_endpoint) return true;
+    return (currentDashboard.agents || []).some((agent) => agent.json_schema_endpoint);
+  }
+
+  async function loadAgentSchemas(currentDashboard = dashboard) {
     const initial = { status: "checking", message: "Checking agent schemas...", count: 0, models: [] };
     setSchemaCheck(initial);
+
+    if (!dashboardHasSchemaEndpoint(currentDashboard)) {
+      const next = {
+        status: "fallback",
+        message: "Schema endpoint is unavailable on this backend; workflow can still run.",
+        count: 0,
+        models: [],
+      };
+      setSchemaCheck(next);
+      return next;
+    }
 
     try {
       const data = await requestJson("/api/agents/schemas");
@@ -206,9 +230,11 @@ function App() {
       const data = await requestJson("/api/dashboard");
       setDashboard(data);
       setWorkflowProgress(buildWorkflowSteps(data, schemaCheck));
+      return data;
     } catch (error) {
       setDashboard(null);
       setErrorMessage(error.message);
+      return null;
     } finally {
       setLoading(false);
     }
