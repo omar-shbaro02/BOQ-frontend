@@ -265,6 +265,7 @@ function App() {
         fileInputRef.current.value = "";
       }
     } catch (error) {
+      console.error("BOQ upload failed", error);
       setErrorMessage(error.message);
     } finally {
       setUploadBusy(false);
@@ -299,9 +300,10 @@ function App() {
       }
 
       if (latest?.workflow?.status === "failed") {
-        throw new Error(latest?.chat_history?.at(-1)?.content || "The workflow failed on the backend.");
+        throw new Error(latest?.workflow?.last_error || latest?.chat_history?.at(-1)?.content || "The workflow failed on the backend.");
       }
     } catch (error) {
+      console.error("BOQ workflow failed", error);
       setErrorMessage(error.message);
       setWorkflowProgress((steps) =>
         steps.map((step) =>
@@ -330,6 +332,7 @@ function App() {
       setDashboard(data);
       setChatInput("");
     } catch (error) {
+      console.error("Project chat request failed", error);
       setErrorMessage(error.message);
     } finally {
       setChatBusy(false);
